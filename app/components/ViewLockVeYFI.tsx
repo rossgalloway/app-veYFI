@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {increaseVeYFILockAmount, lockVeYFI} from 'app/actions';
+import {useOption} from 'app/contexts/useOption';
 import {useVotingEscrow} from 'app/contexts/useVotingEscrow';
 import {useYearn} from 'app/contexts/useYearn';
 import {useBalance} from 'app/hooks/useBalance';
@@ -8,6 +9,7 @@ import {
 	MAX_LOCK_TIME,
 	MIN_LOCK_AMOUNT,
 	MIN_LOCK_TIME,
+	OVERLOCK_TIME,
 	validateAllowance,
 	validateAmount,
 	VEYFI_CHAIN_ID
@@ -34,6 +36,7 @@ import type {TNormalizedBN} from '@builtbymom/web3/types';
 export function LockVeYFI(): ReactElement {
 	const [lockAmount, set_lockAmount] = useState(zeroNormalizedBN);
 	const [lockTime, set_lockTime] = useState('');
+	const {isOverLockingAllowed} = useOption();
 	const {provider, address, isActive} = useWeb3();
 	const {onRefresh: refreshBalances} = useYearn();
 	const {
@@ -223,14 +226,17 @@ export function LockVeYFI(): ReactElement {
 						)}
 						onAmountChange={(v: string): void => {
 							const inputed = handleInputChangeValue(v, 0);
-							if (Number(inputed.normalized) > MAX_LOCK_TIME + 1) {
-								set_lockTime((MAX_LOCK_TIME + 1).toString());
+							const maxWeeks = isOverLockingAllowed ? OVERLOCK_TIME : MAX_LOCK_TIME;
+							if (Number(inputed.normalized) > maxWeeks + 1) {
+								set_lockTime((maxWeeks + 1).toString());
 							} else {
 								set_lockTime(inputed.normalized.toString());
 							}
 						}}
-						maxAmount={toNormalizedBN(MAX_LOCK_TIME + 1, 0)}
-						onMaxClick={(): void => set_lockTime((MAX_LOCK_TIME + 1).toString())}
+						maxAmount={toNormalizedBN((isOverLockingAllowed ? OVERLOCK_TIME : MAX_LOCK_TIME) + 1, 0)}
+						onMaxClick={(): void =>
+							set_lockTime(((isOverLockingAllowed ? OVERLOCK_TIME : MAX_LOCK_TIME) + 1).toString())
+						}
 						disabled={hasLockedAmount}
 						legend={'Minimum: 1 week'}
 						error={lockTimeError}

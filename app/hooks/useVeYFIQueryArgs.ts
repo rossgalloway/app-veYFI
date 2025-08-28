@@ -29,7 +29,8 @@ function useQueryArguments(): TQueryArgs {
 
 	useDeepCompareEffect((): void | VoidFunction => {
 		if (searchParams) {
-			handleQuery(searchParams);
+			// Convert ReadonlyURLSearchParams -> URLSearchParams for handleQuery
+			handleQuery(new URLSearchParams(searchParams.toString()));
 		}
 	}, [searchParams]);
 

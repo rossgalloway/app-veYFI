@@ -9,7 +9,7 @@ export function TabManageGauges(): ReactElement {
 			<div>
 				<StakeUnstakeGauges />
 			</div>
-			<div className={'h-[1px] w-full bg-neutral-300'} />
+			<div className={'h-px w-full bg-neutral-300'} />
 			<VoteGauge />
 		</div>
 	);

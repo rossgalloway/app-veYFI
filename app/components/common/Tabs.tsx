@@ -13,9 +13,10 @@ type TItem = {
 
 type TTabsProps = {
 	items: TItem[];
+	rightSlot?: ReactElement;
 };
 
-export function Tabs({items}: TTabsProps): ReactElement {
+export function Tabs({items, rightSlot}: TTabsProps): ReactElement {
 	const router = useRouter();
 	// eslint-disable-next-line prefer-destructuring
 	const selectedTabId = router.pathname.split('/')[1] === '' ? 'gauges' : router.pathname.split('/')[1];
@@ -51,6 +52,7 @@ export function Tabs({items}: TTabsProps): ReactElement {
 						</div>
 					)
 				)}
+				<div className={'ml-auto flex items-center'}>{rightSlot}</div>
 			</nav>
 			<div className={'relative z-50 px-4 pt-4 md:hidden'}>
 				<Listbox

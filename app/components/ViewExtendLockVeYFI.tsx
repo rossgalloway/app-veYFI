@@ -1,8 +1,9 @@
 import {useCallback, useMemo, useState} from 'react';
 import {extendVeYFILockTime} from 'app/actions';
+import {useOption} from 'app/contexts/useOption';
 import {useVotingEscrow} from 'app/contexts/useVotingEscrow';
 import {useYearn} from 'app/contexts/useYearn';
-import {getVotingPower, MAX_LOCK_TIME, MIN_LOCK_TIME, validateAmount, VEYFI_CHAIN_ID} from 'app/utils';
+import {getVotingPower, MAX_LOCK_TIME, MIN_LOCK_TIME, OVERLOCK_TIME, validateAmount, VEYFI_CHAIN_ID} from 'app/utils';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {handleInputChangeValue, toBigInt, toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi';
@@ -18,6 +19,7 @@ export function ExtendLockVeYFI(): ReactElement {
 	const {provider, address, isActive} = useWeb3();
 	const {onRefresh: refreshBalances} = useYearn();
 	const {votingEscrow, positions, refresh: refreshVotingEscrow} = useVotingEscrow();
+	const {isOverLockingAllowed} = useOption();
 	const hasLockedAmount = toBigInt(positions?.deposit?.underlyingBalance) > 0n;
 	const willExtendLock = toBigInt(lockTime.raw) > 0n;
 	const timeUntilUnlock = positions?.unlockTime ? getTimeUntil(positions?.unlockTime) : undefined;
@@ -59,10 +61,9 @@ export function ExtendLockVeYFI(): ReactElement {
 		minAmountAllowed: MIN_LOCK_TIME
 	});
 
+	const maxWeeks = isOverLockingAllowed ? OVERLOCK_TIME : MAX_LOCK_TIME;
 	const maxTime =
-		MAX_LOCK_TIME - Number(weeksToUnlock?.normalized || 0) > 0
-			? MAX_LOCK_TIME - Number(weeksToUnlock?.normalized || 0)
-			: 0;
+		maxWeeks - Number(weeksToUnlock?.normalized || 0) > 0 ? maxWeeks - Number(weeksToUnlock?.normalized || 0) : 0;
 	return (
 		<div className={'grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-16'}>
 			<div className={'col-span-1 w-full'}>

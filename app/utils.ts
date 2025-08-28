@@ -21,6 +21,7 @@ export const YEARN_SNAPSHOT_SPACE = 'veyfi.eth';
 
 export const SECONDS_PER_YEAR = 31556952;
 export const MAX_LOCK_TIME: TWeeks = 208;
+export const OVERLOCK_TIME: TWeeks = 519;
 export const MIN_LOCK_TIME: TWeeks = 1;
 export const MIN_LOCK_AMOUNT: TWeeks = 1;
 

@@ -8,7 +8,7 @@ import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
 import {toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {BIG_ZERO, YFI_ADDRESS} from '@builtbymom/web3/utils/constants';
 import {retrieveConfig} from '@builtbymom/web3/utils/wagmi';
-import {useDeepCompareMemo} from '@react-hookz/web';
+import {useDeepCompareMemo, useLocalStorageValue} from '@react-hookz/web';
 import {readContract} from '@wagmi/core';
 
 import type {ReactElement} from 'react';
@@ -20,6 +20,8 @@ export type TOptionContext = {
 	position: TNormalizedBN;
 	discount: TNormalizedBN;
 	refresh: () => void;
+	isOverLockingAllowed: boolean;
+	set_isOverLockingAllowed: (v: boolean) => void;
 };
 
 const defaultProps: TOptionContext = {
@@ -27,7 +29,9 @@ const defaultProps: TOptionContext = {
 	dYFIPrice: 0,
 	discount: zeroNormalizedBN,
 	position: zeroNormalizedBN,
-	refresh: (): void => undefined
+	refresh: (): void => undefined,
+	isOverLockingAllowed: false,
+	set_isOverLockingAllowed: (): void => undefined
 };
 
 const OptionContext = createContext<TOptionContext>(defaultProps);
@@ -37,6 +41,18 @@ export const OptionContextApp = memo(function OptionContextApp({children}: {chil
 	const [position, set_position] = useState<TNormalizedBN>(zeroNormalizedBN);
 	const [discount, set_discount] = useState<TNormalizedBN>(zeroNormalizedBN);
 	const yfiPrice = useYearnTokenPrice({address: YFI_ADDRESS, chainID: VEYFI_CHAIN_ID});
+	const {value: isOverLockingAllowed, set: set_isOverLockingAllowedStorage} = useLocalStorageValue<boolean>(
+		'yearn.fi/allow-overlock',
+		{defaultValue: false}
+	);
+	const set_isOverLockingAllowed = useCallback(
+		(v: boolean): void => {
+			if (typeof set_isOverLockingAllowedStorage === 'function') {
+				set_isOverLockingAllowedStorage(v);
+			}
+		},
+		[set_isOverLockingAllowedStorage]
+	);
 
 	const getRequiredEth = useCallback(async (amount: bigint): Promise<bigint> => {
 		try {
@@ -92,9 +108,11 @@ export const OptionContextApp = memo(function OptionContextApp({children}: {chil
 			dYFIPrice,
 			position,
 			discount,
-			refresh
+			refresh,
+			isOverLockingAllowed: isOverLockingAllowed ?? false,
+			set_isOverLockingAllowed
 		}),
-		[getRequiredEth, dYFIPrice, position, discount, refresh]
+		[getRequiredEth, dYFIPrice, position, discount, refresh, isOverLockingAllowed, set_isOverLockingAllowed]
 	);
 
 	return <OptionContext.Provider value={contextValue}>{children}</OptionContext.Provider>;
