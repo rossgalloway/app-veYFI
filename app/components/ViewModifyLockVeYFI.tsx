@@ -1,3 +1,4 @@
+'use client';
 import {useCallback, useMemo, useState} from 'react';
 import {extendVeYFILockTime} from 'app/actions';
 import {AmountInputWithMin} from 'app/components/common/AmountInputWithMin';
@@ -34,6 +35,7 @@ export function ModifyLockVeYFI(): ReactElement {
 	}, [refreshBalances, refreshVotingEscrow]);
 
 	const onModifyLockTime = useCallback(async (): Promise<void> => {
+		console.log('Modifying lock time to:', targetUnlockTime, toBigInt(toSeconds(targetUnlockTime)));
 		const result = await extendVeYFILockTime({
 			connector: provider,
 			chainID: VEYFI_CHAIN_ID,
@@ -69,10 +71,12 @@ export function ModifyLockVeYFI(): ReactElement {
 	});
 
 	const onMinClick = useCallback((): void => {
+		console.log('setting lock time to:', toNormalizedBN(MAX_LOCK_TIME, 0));
 		set_newLockTime(toNormalizedBN(MAX_LOCK_TIME, 0));
 	}, []);
 
 	const onMaxClick = useCallback((): void => {
+		console.log('setting lock time to:', toNormalizedBN(maxAllowedWeeks, 0));
 		set_newLockTime(toNormalizedBN(maxAllowedWeeks, 0));
 	}, [maxAllowedWeeks]);
 

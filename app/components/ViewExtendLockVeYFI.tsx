@@ -1,3 +1,4 @@
+'use client';
 import {useCallback, useMemo, useState} from 'react';
 import {extendVeYFILockTime} from 'app/actions';
 import {useOption} from 'app/contexts/useOption';
