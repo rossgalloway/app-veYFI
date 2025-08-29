@@ -261,11 +261,11 @@ export function RewardsTab(): ReactElement {
 		<div className={'flex flex-col gap-6 md:gap-10'}>
 			<GaugeRewards />
 
-			<div className={'h-[1px] w-full bg-neutral-300'} />
+			<div className={'h-px w-full bg-neutral-300'} />
 
 			<BoostRewards />
 
-			<div className={'h-[1px] w-full bg-neutral-300'} />
+			<div className={'h-px w-full bg-neutral-300'} />
 
 			<ExitRewards />
 		</div>

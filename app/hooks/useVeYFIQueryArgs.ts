@@ -31,6 +31,8 @@ function useQueryArguments(): TQueryArgs {
 		if (searchParams) {
 			const nativeSearchParams = new URLSearchParams(searchParams.toString());
 			handleQuery(nativeSearchParams);
+			// Convert ReadonlyURLSearchParams -> URLSearchParams for handleQuery
+			handleQuery(new URLSearchParams(searchParams.toString()));
 		}
 	}, [searchParams]);
 

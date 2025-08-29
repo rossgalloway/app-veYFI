@@ -178,6 +178,7 @@ export function StakeUnstakeGauges(): ReactElement {
 			const vaultBalance = getBalance({address: vault.address, chainID: vault.chainID});
 			const boost = Number(userPositionInGauge[gauge.address]?.boost || 1);
 			const APYFor10xBoost = vault.apr.extra.stakingRewardsAPR * 100;
+			const vaultForwardAPR = vault.apr.forwardAPR.netAPR;
 			const vaultMonthlyAPY = vault.apr.points.monthAgo;
 			const vaultWeeklyAPY = vault.apr.points.weekAgo;
 			data.push({
@@ -186,7 +187,11 @@ export function StakeUnstakeGauges(): ReactElement {
 				decimals: gauge.decimals,
 				vaultIcon: `${process.env.BASE_YEARN_ASSETS_URI}/1/${vault.token.address}/logo-128.png`,
 				vaultName: vault?.name ?? `Vault ${truncateHex(vault.address, 4)}`,
-				vaultApy: isZero(vaultMonthlyAPY) ? vaultWeeklyAPY : vaultMonthlyAPY,
+				vaultApy: isZero(vaultForwardAPR)
+					? isZero(vaultMonthlyAPY)
+						? vaultWeeklyAPY
+						: vaultMonthlyAPY
+					: vaultForwardAPR,
 				vaultDeposited: vaultBalance,
 				vaultVersion: vault.version.startsWith('3') ? 3 : 2,
 				gaugeAPY: APYFor10xBoost,
