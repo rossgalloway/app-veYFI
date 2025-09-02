@@ -13,11 +13,9 @@ import type {ReactElement} from 'react';
 
 export function TabManageVeYFI(): ReactElement {
 	const {positions} = useVotingEscrow();
-	console.log('positions', positions);
 	const {isOverLockingAllowed} = useOption();
 	const lockData = toNormalizedBN(toBigInt(positions?.deposit?.underlyingBalance), 18);
 	const hasLock = lockData && toBigInt(lockData.raw) > 0n;
-	console.log('hasLock', lockData);
 
 	return (
 		<div className={'grid gap-10'}>

@@ -35,7 +35,6 @@ export function ModifyLockVeYFI(): ReactElement {
 	}, [refreshBalances, refreshVotingEscrow]);
 
 	const onModifyLockTime = useCallback(async (): Promise<void> => {
-		console.log('Modifying lock time to:', targetUnlockTime, toBigInt(toSeconds(targetUnlockTime)));
 		const result = await extendVeYFILockTime({
 			connector: provider,
 			chainID: VEYFI_CHAIN_ID,
@@ -71,12 +70,10 @@ export function ModifyLockVeYFI(): ReactElement {
 	});
 
 	const onMinClick = useCallback((): void => {
-		console.log('setting lock time to:', toNormalizedBN(minAllowedWeeks, 0));
 		set_newLockTime(toNormalizedBN(minAllowedWeeks, 0));
 	}, []);
 
 	const onMaxClick = useCallback((): void => {
-		console.log('setting lock time to:', toNormalizedBN(maxAllowedWeeks, 0));
 		set_newLockTime(toNormalizedBN(maxAllowedWeeks, 0));
 	}, [maxAllowedWeeks]);
 
