@@ -186,11 +186,15 @@ export function LockVeYFI(): ReactElement {
 	return (
 		<div className={'grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-16'}>
 			<div className={'col-span-1 w-full'}>
-				<h2 className={'m-0 text-2xl font-bold'}>{"YFI holders, time to Lock' ‘N Load"}</h2>
+				<h2 className={'m-0 text-2xl font-bold'}>{'Lock YFI for veYFI'}</h2>
 				{hasExpiredLock ? (
-					<div className={'bg-red-100 mt-6 rounded-lg text-red-900'}>
-						<p className={'font-bold'}>{'Warning: Unable to relock'}</p>
-						<p className={'mt-2'}>{'Accounts with expired locks cannot relock their YFI at this time. '}</p>
+					<div className={'mt-6 text-neutral-600'}>
+						<p className={'font-bold'}>{'Re-locking not possible at this time.'}</p>
+						<p className={'mt-2'}>
+							{
+								'Accounts with expired locks cannot re-lock their YFI at this time. We are cooking up the next iteration of staking and once that is deployed you will be able to re-lock your YFI.'
+							}
+						</p>
 					</div>
 				) : (
 					<div className={'mt-6 text-neutral-600'}>
