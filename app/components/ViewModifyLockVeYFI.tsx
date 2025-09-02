@@ -71,8 +71,8 @@ export function ModifyLockVeYFI(): ReactElement {
 	});
 
 	const onMinClick = useCallback((): void => {
-		console.log('setting lock time to:', toNormalizedBN(MAX_LOCK_TIME + 1, 0));
-		set_newLockTime(toNormalizedBN(MAX_LOCK_TIME + 1, 0));
+		console.log('setting lock time to:', toNormalizedBN(minAllowedWeeks, 0));
+		set_newLockTime(toNormalizedBN(minAllowedWeeks, 0));
 	}, []);
 
 	const onMaxClick = useCallback((): void => {
