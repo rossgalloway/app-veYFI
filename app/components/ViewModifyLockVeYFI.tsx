@@ -104,10 +104,16 @@ export function ModifyLockVeYFI(): ReactElement {
 						label={'New lock period (weeks)'}
 						amount={newLockTime}
 						onAmountChange={(v: string): void => {
-							const inputed = handleInputChangeValue(v, 0);
-							if (Number(inputed.normalized) > maxAllowedWeeks) {
+							const input = handleInputChangeValue(v, 0);
+							const inputValue = Number(input.normalized);
+
+							// Apply constraints when value is set (e.g., on blur)
+							// Allow empty values during editing
+							if (v === '' || inputValue === 0) {
+								set_newLockTime(toNormalizedBN(0, 0));
+							} else if (inputValue > maxAllowedWeeks) {
 								set_newLockTime(toNormalizedBN(maxAllowedWeeks, 0));
-							} else if (Number(inputed.normalized) < minAllowedWeeks) {
+							} else if (inputValue < minAllowedWeeks) {
 								set_newLockTime(toNormalizedBN(minAllowedWeeks, 0));
 							} else {
 								set_newLockTime(toNormalizedBN(Math.floor(toTime(v)), 0));

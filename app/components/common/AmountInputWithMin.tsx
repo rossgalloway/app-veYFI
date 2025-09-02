@@ -1,4 +1,5 @@
-import {type ReactElement} from 'react';
+'use client';
+import {type ReactElement, useState} from 'react';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 
 import type {TNormalizedBN} from '@builtbymom/web3/types/mixed';
@@ -33,9 +34,39 @@ export function AmountInputWithMin({
 	onMaxClick,
 	onMinClick
 }: TAmountInputProps): ReactElement {
+	const [isFocused, set_isFocused] = useState(false);
+	const [displayValue, set_displayValue] = useState('');
+
 	const hasButtons = Boolean((maxAmount && !disabled && onMaxClick) || (onMinClick && !disabled));
 	const hasMinButton = Boolean(onMinClick && !disabled);
 	const hasMaxButton = Boolean(maxAmount && !disabled && onMaxClick);
+
+	// Use display value when focused, amount.normalized when not focused
+	const inputValue = isFocused ? displayValue : String(amount.normalized || 0);
+
+	const handleFocus = (): void => {
+		set_isFocused(true);
+		set_displayValue(String(amount.normalized || 0));
+	};
+
+	const handleBlur = (): void => {
+		set_isFocused(false);
+		// Let the parent component handle validation and constraint enforcement
+		if (onAmountChange) {
+			onAmountChange(displayValue);
+		}
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+		const {value} = e.target;
+		if (isFocused) {
+			// Allow free editing while focused
+			set_displayValue(value);
+		} else if (onAmountChange) {
+			// Only call parent onChange when not focused
+			onAmountChange(value);
+		}
+	};
 
 	return (
 		<div className={'w-full'}>
@@ -50,8 +81,10 @@ export function AmountInputWithMin({
 					type={'text'}
 					autoComplete={'off'}
 					aria-label={label}
-					value={amount.normalized}
-					onChange={onAmountChange ? (e): void => onAmountChange(e.target.value) : undefined}
+					value={inputValue}
+					onChange={handleChange}
+					onFocus={handleFocus}
+					onBlur={handleBlur}
 					placeholder={loading ? '' : (placeholder ?? '0')}
 					disabled={disabled}
 				/>
