@@ -1,4 +1,3 @@
-'use client';
 import {type ReactElement, useState} from 'react';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 

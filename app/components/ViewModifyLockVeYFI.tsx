@@ -1,4 +1,3 @@
-'use client';
 import {useCallback, useMemo, useState} from 'react';
 import {extendVeYFILockTime} from 'app/actions';
 import {AmountInputWithMin} from 'app/components/common/AmountInputWithMin';

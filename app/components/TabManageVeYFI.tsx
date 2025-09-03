@@ -1,4 +1,3 @@
-'use client';
 import {useOption} from 'app/contexts/useOption';
 import {useVotingEscrow} from 'app/contexts/useVotingEscrow';
 import {toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
