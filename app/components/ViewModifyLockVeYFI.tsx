@@ -70,11 +70,35 @@ export function ModifyLockVeYFI(): ReactElement {
 
 	const onMinClick = useCallback((): void => {
 		set_newLockTime(toNormalizedBN(minAllowedWeeks, 0));
-	}, []);
+	}, [minAllowedWeeks]);
 
 	const onMaxClick = useCallback((): void => {
 		set_newLockTime(toNormalizedBN(maxAllowedWeeks, 0));
 	}, [maxAllowedWeeks]);
+
+	const handleLockTimeChange = useCallback(
+		(v: string): void => {
+			const input = handleInputChangeValue(v, 0);
+			const inputValue = Number(input.normalized);
+
+			const isEmpty = v === '' || inputValue === 0;
+			const isBeyondMaxBounds = inputValue > maxAllowedWeeks;
+			const isBelowMinBounds = inputValue < minAllowedWeeks;
+
+			// Apply constraints when value is set (e.g., on blur)
+			// Allow empty values during editing
+			if (isEmpty) {
+				set_newLockTime(toNormalizedBN(0, 0));
+			} else if (isBeyondMaxBounds) {
+				set_newLockTime(toNormalizedBN(maxAllowedWeeks, 0));
+			} else if (isBelowMinBounds) {
+				set_newLockTime(toNormalizedBN(minAllowedWeeks, 0));
+			} else {
+				set_newLockTime(toNormalizedBN(Math.floor(toTime(v)), 0));
+			}
+		},
+		[maxAllowedWeeks, minAllowedWeeks]
+	);
 
 	return (
 		<div className={'grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-16'}>
@@ -99,22 +123,7 @@ export function ModifyLockVeYFI(): ReactElement {
 					<AmountInputWithMin
 						label={'New lock period (weeks)'}
 						amount={newLockTime}
-						onAmountChange={(v: string): void => {
-							const input = handleInputChangeValue(v, 0);
-							const inputValue = Number(input.normalized);
-
-							// Apply constraints when value is set (e.g., on blur)
-							// Allow empty values during editing
-							if (v === '' || inputValue === 0) {
-								set_newLockTime(toNormalizedBN(0, 0));
-							} else if (inputValue > maxAllowedWeeks) {
-								set_newLockTime(toNormalizedBN(maxAllowedWeeks, 0));
-							} else if (inputValue < minAllowedWeeks) {
-								set_newLockTime(toNormalizedBN(minAllowedWeeks, 0));
-							} else {
-								set_newLockTime(toNormalizedBN(Math.floor(toTime(v)), 0));
-							}
-						}}
+						onAmountChange={handleLockTimeChange}
 						maxAmount={toNormalizedBN(maxAllowedWeeks, 0)}
 						onMaxClick={onMaxClick}
 						onMinClick={onMinClick}
